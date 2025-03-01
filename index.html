@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Search and download YouTube videos easily. Fast, secure, and free.">
+    <meta name="keywords" content="YouTube video downloader, download YouTube videos, YouTube MP4, YouTube video search">
+    <meta name="author" content="Your Name">
+    <title>YouTube Video Downloader</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #ff0000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #search-section {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        #video-url {
+            width: 70%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #search-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        #search-btn:hover {
+            background-color: #0056b3;
+        }
+
+        #video-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #video-player {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            border: none;
+            border-radius: 10px;
+        }
+
+        #download-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        #download-btn:hover {
+            background-color: #218838;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-YOUR_AD_UNIT_ID" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <h1>YouTube Video Downloader</h1>
+        <p>Search, find, and download your favorite YouTube videos in MP4 format.</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="history.html">Download History</a>
+    </nav>
+
+    <main>
+        <!-- Search Section -->
+        <section id="search-section">
+            <input type="text" id="video-url" placeholder="Paste YouTube video link here..." required>
+            <button id="search-btn">Search</button>
+        </section>
+
+        <!-- Video Container -->
+        <section id="video-container">
+            <iframe id="video-player" src="" frameborder="0" allowfullscreen></iframe>
+            <button id="download-btn">Download Video</button>
+        </section>
+
+        <!-- AdSense Ad Unit -->
+        <section id="ad-section">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-YOUR_AD_UNIT_ID"
+                 data-ad-slot="1234567890"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 YouTube Video Downloader. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Array to store download history
+        let downloadHistory = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+
+        // Search button functionality
+        document.getElementById('search-btn').addEventListener('click', function () {
+            const videoUrl = document.getElementById('video-url').value;
+            if (videoUrl) {
+                showVideo(videoUrl);
+            } else {
+                alert('Please enter a valid YouTube video link.');
+            }
+        });
+
+        // Function to show video
+        function showVideo(videoUrl) {
+            const videoId = extractVideoId(videoUrl);
+            if (videoId) {
+                const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                document.getElementById('video-player').src = embedUrl;
+                document.getElementById('video-container').style.display = 'block';
+            } else {
+                alert('Invalid YouTube video link.');
+            }
+        }
+
+        // Function to extract video ID from URL
+        function extractVideoId(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Download button functionality
+        document.getElementById('download-btn').addEventListener('click', function () {
+            const videoUrl = document.getElementById('video-url').value;
+            if (videoUrl) {
+                const videoId = extractVideoId(videoUrl);
+                if (videoId) {
+                    addToHistory(videoId);
+                    alert(`Downloading video... (Video ID: ${videoId})`);
+                }
+            } else {
+                alert('Please enter a valid YouTube video link.');
+            }
+        });
+
+        // Function to add video to download history
+        function addToHistory(videoId) {
+            const historyItem = {
+                id: videoId,
+                timestamp: new Date().toLocaleString(),
+            };
+            downloadHistory.push(historyItem);
+            localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+        }
+    </script>
+</body>
+</html>

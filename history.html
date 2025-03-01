@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View your YouTube video download history.">
+    <meta name="keywords" content="YouTube download history, video download history">
+    <meta name="author" content="Your Name">
+    <title>Download History</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        header {
+            background-color: #ff0000;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 18px;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        #history-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #history-list li {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Download History</h1>
+        <p>View your downloaded YouTube videos.</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="history.html">Download History</a>
+    </nav>
+
+    <main>
+        <h2>Your Download History</h2>
+        <ul id="history-list">
+            <!-- History items will be added here dynamically -->
+        </ul>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 YouTube Video Downloader. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Retrieve download history from localStorage
+        const downloadHistory = JSON.parse(localStorage.getItem('downloadHistory')) || [];
+
+        // Function to display history
+        function displayHistory() {
+            const historyList = document.getElementById('history-list');
+            historyList.innerHTML = '';
+            downloadHistory.forEach((item, index) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>Video ID:</strong> ${item.id}<br>
+                    <strong>Downloaded on:</strong> ${item.timestamp}
+                    <button onclick="deleteHistoryItem(${index})">Delete</button>
+                `;
+                historyList.appendChild(listItem);
+            });
+        }
+
+        // Function to delete a history item
+        function deleteHistoryItem(index) {
+            downloadHistory.splice(index, 1);
+            localStorage.setItem('downloadHistory', JSON.stringify(downloadHistory));
+            displayHistory();
+        }
+
+        // Display history when the page loads
+        displayHistory();
+    </script>
+</body>
+</html>
